@@ -3,18 +3,28 @@ import sys
 import time
 from struct import unpack
 from bluepy import btle
+import time
 
 
-def main():
-	if len(sys.argv) != 2:
-		print('Error: Need Bluetooth device address as parameter')
-		sys.exit(1)
-	device_address = sys.argv[1]
+class CouldNotConnectError(Exception):
+	pass
+
+
+class Measurement:
+	def __init__(self, humidity, temperature, radon_avg, radon_1day, accel, humidity2):
+		self.humidity = humidity
+		self.temperature = temperature
+		self.radon_avg = radon_avg
+		self.radon_1day = radon_1day
+		self.accel = accel
+		self.humidity2 = humidity2
+
+
+def connect_and_read(device_address):
 	try:
 		dev = btle.Peripheral(device_address)
 	except btle.BTLEException as e:
-		print('Could not connect', file=sys.stderr)
-		sys.exit(1)
+		raise CouldNotConnectError()
 
 	# Humidity: 00002a6f-0000-1000-8000-00805f9b34fb
 	# Temperature: ...
@@ -56,18 +66,31 @@ def main():
 			# Description: 'Status info'
 			# Seems to be identical to humidity
 			humidity2 = unpack('h', ch.read())[0] / 100
-
-	print('{time}\t{temperature:.2f}\t{humidity:.2f}\t{radon_avg}\t{radon_1day}\t{accel:04X}\t{humidity2:.2f}'.format(
-			time=time.strftime('%Y-%m-%d %H:%M:%S'),
-			temperature=temperature,
-			humidity=humidity,
-			radon_avg=radon_avg,
-			radon_1day=radon_1day,
-			accel=accel,
-			humidity2=humidity2),
-		sep='\t')
-
 	dev.disconnect()
+	return Measurement(humidity=humidity, temperature=temperature,
+		radon_avg=radon_avg, radon_1day=radon_1day, accel=accel,
+		humidity2=humidity2)
+
+
+def main():
+	if len(sys.argv) != 2:
+		print('Error: Need Bluetooth device address as parameter')
+		sys.exit(1)
+	device_address = sys.argv[1]
+
+	while True:
+		try:
+			measurement = connect_and_read(device_address)
+		except CouldNotConnectError:
+			print('Could not connect', file=sys.stderr)
+		except btle.BTLEException as e:
+			print('Bluetooth error:', e, file=sys.stderr)
+		print('{time}\t{temperature:.2f}\t{humidity:.2f}\t{radon_avg}\t{radon_1day}\t{accel:04X}\t{humidity2:.2f}'.format(
+				time=time.strftime('%Y-%m-%d %H:%M:%S'),
+				**vars(measurement)
+				), sep='\t')
+		sys.stdout.flush()
+		time.sleep(20*60)
 
 
 if __name__ == '__main__':
