@@ -20,9 +20,12 @@ The radon level history stored on the Wave itself cannot be accessed
 with this program. To get around this, I run it continuously on a Raspberry Pi
 that connects regularly to the radon detector.
 
+Make sure you install the latest firmware. The Wave and also this script were
+very unstable until I installed firmware from Feb. 21, 2018.
 
 # Hardware requirements
 
+* An Airthings Wave
 * A Bluetooth adapter that supports Bluetooth Low Energy (BLE).
 
 
@@ -116,7 +119,10 @@ from over 500 to 17.
 
 I am not quite sure what the value “Radon conc. 1 day” is. After a reset,
 the value reported here was identical to the “Radon conc. average” value for
-the first 24 hours and then started to differ.
+the first 24 hours and then started to differ. It is possibly some type of
+long-term average: After we had radon mitigation installed, the value has been
+dropping very slowly. It is not the same as the 48 hour, month or year average
+as reported by the app, but probably closer to three months.
 
 
 # Other notes
