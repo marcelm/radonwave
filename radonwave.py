@@ -4,6 +4,7 @@ import time
 from struct import unpack
 from bluepy import btle
 import time
+from argparse import ArgumentParser
 
 
 class CouldNotConnectError(Exception):
@@ -73,10 +74,14 @@ def connect_and_read(device_address):
 
 
 def main():
-	if len(sys.argv) != 2:
-		print('Error: Need Bluetooth device address as parameter')
-		sys.exit(1)
-	device_address = sys.argv[1]
+	parser = ArgumentParser()
+	parser.add_argument('--wait', default=1200, type=int,
+		help='Seconds to wait between queries. Do not choose this too low as the '
+		'radon levels are only updated once every 60 minutes. Default: 1200 '
+		'(20 minutes)')
+	parser.add_argument('device_address', metavar='BLUETOOTH-DEVICE-ADDRESS')
+	args = parser.parse_args()
+	device_address = args.device_address
 
 	while True:
 		try:
@@ -91,7 +96,7 @@ def main():
 				**vars(measurement)
 				), sep='\t')
 			sys.stdout.flush()
-		time.sleep(20*60)
+		time.sleep(args.wait)
 
 
 if __name__ == '__main__':
