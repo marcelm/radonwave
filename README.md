@@ -124,6 +124,23 @@ long-term average: After we had radon mitigation installed, the value has been
 dropping very slowly. It is not the same as the 48 hour, month or year average
 as reported by the app, but probably closer to three months.
 
+# Other characteristics
+
+## Status info
+
+There is a characteristic called “Status info” available by reading from
+b42e1348-ade7-11e4-89d3-123b93f75cba. It is identical to the humidity
+characteristic *except* for once every 24 hours, when this one is 0, but the
+true “Humidity” characteristic still shows a sensible value.
+
+## Accel. Light 5m
+
+A characteristic called “Accel. Light 5m” is available from
+b42e1096-ade7-11e4-89d3-123b93f75cba.
+
+The second byte of this 16-bit value appears to be brightness, as
+@christianchristensen found out. See also the discussion in
+[issue #1](https://github.com/marcelm/radonwave/issues/1).
 
 # Other notes
 
@@ -132,5 +149,5 @@ as reported by the app, but probably closer to three months.
 
 * If your Bluetooth adapter seems not to work, you may need to unblock it:
 
-    sudo apt install rfkill
-    sudo rfkill unblock bluetooth
+      sudo apt install rfkill
+      sudo rfkill unblock bluetooth
