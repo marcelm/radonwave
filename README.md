@@ -9,6 +9,10 @@ allows you to create such a file.
 **Note:** Don’t expect a finished product here. The tool and the README serve
 mainly as a way to document how to interface with the Wave.
 
+A couple of days after publishing this, Airthings themselves made instructions
+and a script available at <https://airthings.com/raspberry-pi/>. Their script
+is written in Python 2 and does not report the “Other characteristics”
+(described below), but appears to have equivalent functionality otherwise.
 
 # Limitations
 
@@ -117,12 +121,14 @@ actually even slower: When I moved the device from the basement to a place
 outside the house, it took 24 hours until the value reported here had dropped
 from over 500 to 17.
 
-I am not quite sure what the value “Radon conc. 1 day” is. After a reset,
-the value reported here was identical to the “Radon conc. average” value for
-the first 24 hours and then started to differ. It is possibly some type of
-long-term average: After we had radon mitigation installed, the value has been
-dropping very slowly. It is not the same as the 48 hour, month or year average
-as reported by the app, but probably closer to three months.
+The meaning of the “Radon conc. 1 day” value is described by [Airthings on
+their Raspberry Pi website](https://airthings.com/raspberry-pi/) as follows:
+
+> The radon long term measurements are averaged from the batteries are
+> inserted up to one year.
+
+It appears that after a reset, the value is identical to “Radon conc. average”
+for the first 24 hours and then starts to differ.
 
 # Other characteristics
 
