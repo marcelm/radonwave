@@ -27,11 +27,6 @@ def connect_and_read(device_address):
     except btle.BTLEException as e:
         raise CouldNotConnectError()
 
-    # Humidity: 00002a6f-0000-1000-8000-00805f9b34fb
-    # Temperature: ...
-    # Radon conc. average: b42e0a4c-ade7-11e4-89d3-123b93f75cba
-    # Radon conc. 1 day: b42e01aa-ade7-11e4-89d3-123b93f75cba
-
     if False:
         print('Services')
         for service in dev.services:
