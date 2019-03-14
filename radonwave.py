@@ -12,12 +12,13 @@ class CouldNotConnectError(Exception):
 
 
 class Measurement:
-    def __init__(self, humidity, temperature, radon_avg, radon_1day, accel, humidity2):
+    def __init__(self, humidity, temperature, radon_avg, radon_1day, accel, brightness, humidity2):
         self.humidity = humidity
         self.temperature = temperature
         self.radon_avg = radon_avg
         self.radon_1day = radon_1day
         self.accel = accel
+        self.brightness = brightness
         self.humidity2 = humidity2
 
 
@@ -57,7 +58,7 @@ def connect_and_read(device_address):
             radon_1day = value
         elif name == 'b42e1096-ade7-11e4-89d3-123b93f75cba':
             # Description: 'Accel. Light 5m'
-            accel = unpack('H', ch.read())[0]
+            brightness, accel = unpack('BB', ch.read())
         elif name == 'b42e1348-ade7-11e4-89d3-123b93f75cba':
             # Description: 'Status info'
             # Seems to be identical to humidity
@@ -87,7 +88,7 @@ def main():
         except btle.BTLEException as e:
             print('Bluetooth error:', e, file=sys.stderr)
         else:
-            print('{time}\t{temperature:.2f}\t{humidity:.2f}\t{radon_avg}\t{radon_1day}\t{accel:04X}\t{humidity2:.2f}'.format(
+            print('{time}\t{temperature:.2f}\t{humidity:.2f}\t{radon_avg}\t{radon_1day}\t{brightness}\t{accel:02X}\t{humidity2:.2f}'.format(
                 time=time.strftime('%Y-%m-%d %H:%M:%S'),
                 **vars(measurement)
                 ), sep='\t')
