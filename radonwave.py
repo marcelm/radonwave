@@ -5,6 +5,7 @@ from struct import unpack
 from bluepy import btle
 import time
 from argparse import ArgumentParser
+import json
 
 
 class CouldNotConnectError(Exception):
@@ -76,10 +77,25 @@ def main():
         'radon levels are only updated once every 60 minutes. Set to 0 to query '
         'only once. Default: 1200 '
         '(20 minutes)')
+    parser.add_argument('--mqtt', help='MQTT server')
+    parser.add_argument('--topic', help='MQTT topic')
     parser.add_argument('device_address', metavar='BLUETOOTH-DEVICE-ADDRESS')
     args = parser.parse_args()
     device_address = args.device_address
 
+    if args.mqtt and not args.topic:
+        parser.error('Provide also a --topic when you use --mqtt')
+    if args.mqtt:
+        try:
+            import paho.mqtt.client as mqtt
+            client = mqtt.Client()
+            client.connect(args.mqtt)
+            assert client
+        except Exception as e:  # unsure which exceptions connect can cause, so need to catch everything
+            print('Could not connect to MQTT broker:', e, file=sys.stderr)
+            client = None
+    else:
+        client = None
     while True:
         try:
             measurement = connect_and_read(device_address)
@@ -93,9 +109,19 @@ def main():
                 **vars(measurement)
                 ), sep='\t')
             sys.stdout.flush()
+        if client:
+            data = {
+                'temperature': measurement.temperature,
+                'humidity': measurement.humidity,
+                'radon': measurement.radon_1day,
+                'brightness': measurement.brightness,
+            }
+            client.publish(args.topic, json.dumps(data))
         if args.wait == 0:
             break
         time.sleep(args.wait)
+    if client:
+        client.disconnect()
 
 
 if __name__ == '__main__':
