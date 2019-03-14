@@ -70,14 +70,15 @@ def connect_and_read(device_address):
     dev.disconnect()
     return Measurement(humidity=humidity, temperature=temperature,
         radon_avg=radon_avg, radon_1day=radon_1day, accel=accel,
-        humidity2=humidity2)
+        brightness=brightness, humidity2=humidity2)
 
 
 def main():
     parser = ArgumentParser()
     parser.add_argument('--wait', default=1200, type=int,
         help='Seconds to wait between queries. Do not choose this too low as the '
-        'radon levels are only updated once every 60 minutes. Default: 1200 '
+        'radon levels are only updated once every 60 minutes. Set to 0 to query '
+        'only once. Default: 1200 '
         '(20 minutes)')
     parser.add_argument('device_address', metavar='BLUETOOTH-DEVICE-ADDRESS')
     args = parser.parse_args()
@@ -96,6 +97,8 @@ def main():
                 **vars(measurement)
                 ), sep='\t')
             sys.stdout.flush()
+        if args.wait == 0:
+            break
         time.sleep(args.wait)
 
 
