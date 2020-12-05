@@ -63,9 +63,27 @@ what the device address is.
 
 Finally, you can run the program:
 
-    env/bin/python3 radonwave.py ADDRESS
+    env/bin/python radonwave.py ADDRESS
 
 Replace ADDRESS with the device address that you found out above.
+
+
+# MQTT
+
+To regularly post measurements to an MQTT server, I use a script named `radonlog.sh`:
+```
+env/bin/python radonwave.py --wait 0 --mqtt MQTT-SERVER-HOSTNAME --topic sensor/wave ADDRESS >> radonlog.txt
+```
+Make the script executable with `chmod +x radonlog.sh`.
+
+Adjust `MQTT-SERVER-HOSTNAME`, `sensor/wave` and `ADDRESS` as necessary. Also, if authentication is required,
+add `--username myusername` and, if a password is required, also `--password mypassword`.
+
+Due to the `--wait 0`, this will only run once and exit. For regular measurements, I then use a cron job that runs twice an hour. I used to `crontab -e` to edit the crontab and added this line:
+```
+*/30 * * * * $HOME/radonlog.sh
+```
+This should be more reliable than running the script with `--wait 1800`, and the measurements will be at well-defined times.
 
 
 # Notes
