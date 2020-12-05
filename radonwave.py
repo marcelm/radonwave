@@ -108,7 +108,7 @@ def main():
         except btle.BTLEException as e:
             print('Bluetooth error:', e, file=sys.stderr)
         else:
-            print('{time}\t{temperature:.2f}\t{humidity:.2f}\t{radon_avg}\t{radon_1day}\t{brightness}\t{accel:02X}\t{humidity2:.2f}'.format(
+            print('{time}\t{temperature:.2f}\t{humidity:.2f}\t{radon_avg}\t{radon_1day}\t{brightness}\t{accel:02X}'.format(
                 time=time.strftime('%Y-%m-%d %H:%M:%S'),
                 **vars(measurement)
                 ), sep='\t')
