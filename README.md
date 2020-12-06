@@ -70,14 +70,19 @@ Replace ADDRESS with the device address that you found out above.
 
 # MQTT
 
+For MQTT support, please install the `paho.mqtt` package in the virtual environment:
+```
+env/bin/pip install paho.mqtt
+```
+
 To regularly post measurements to an MQTT server, I use a script named `radonlog.sh`:
 ```
 env/bin/python radonwave.py --wait 0 --mqtt MQTT-SERVER-HOSTNAME --topic sensor/wave ADDRESS >> radonlog.txt
 ```
 Make the script executable with `chmod +x radonlog.sh`.
 
-Adjust `MQTT-SERVER-HOSTNAME`, `sensor/wave` and `ADDRESS` as necessary. Also, if authentication is required,
-add `--username myusername` and, if a password is required, also `--password mypassword`.
+Adjust `MQTT-SERVER-HOSTNAME`, `sensor/wave` and `ADDRESS` as necessary. If authentication is required,
+add `--username myusername` and, if a password is required, also `--password mypassword`. To change the default port (1883), use `--port PORT`, where PORT is the port number.
 
 Due to the `--wait 0`, this will only run once and exit. For regular measurements, I then use a cron job that runs twice an hour. I used to `crontab -e` to edit the crontab and added this line:
 ```

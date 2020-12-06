@@ -81,6 +81,7 @@ def main():
     parser.add_argument('--topic', help='MQTT topic')
     parser.add_argument('--username', help='MQTT user name')
     parser.add_argument('--password', help='MQTT password. Ignored if no username given.')
+    parser.add_argument('--port', type=int, default=1883, help='MQTT port. Default: %(default)s')
     parser.add_argument('device_address', metavar='BLUETOOTH-DEVICE-ADDRESS')
     args = parser.parse_args()
     device_address = args.device_address
@@ -93,7 +94,7 @@ def main():
             client = mqtt.Client()
             if args.username:
                 client.username_pw_set(args.username, password=args.password)
-            client.connect(args.mqtt)
+            client.connect(args.mqtt, port=args.port)
             assert client
         except Exception as e:  # unsure which exceptions connect can cause, so need to catch everything
             print('Could not connect to MQTT broker:', e, file=sys.stderr)
