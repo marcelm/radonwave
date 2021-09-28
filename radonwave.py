@@ -40,7 +40,7 @@ def connect_and_read(device_address):
 
     service = dev.getServiceByUUID(btle.UUID('b42e1f6e-ade7-11e4-89d3-123b93f75cba'))
 
-    temperature = humidity = radon_avg = radon_1day = accel = humidity2 = None
+    temperature = humidity = radon_avg = radon_1day = accel = brightness = humidity2 = None
     for ch in service.getCharacteristics():
         name = ch.uuid.getCommonName()
         if name == 'Temperature':
