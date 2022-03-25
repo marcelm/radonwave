@@ -108,20 +108,20 @@ def main():
             print('Could not connect', file=sys.stderr)
         except btle.BTLEException as e:
             print('Bluetooth error:', e, file=sys.stderr)
-        else:
+        else:  # no exception occurred
             print('{time}\t{temperature:.2f}\t{humidity:.2f}\t{radon_avg}\t{radon_1day}\t{brightness}\t{accel:02X}'.format(
                 time=time.strftime('%Y-%m-%d %H:%M:%S'),
                 **vars(measurement)
                 ), sep='\t')
             sys.stdout.flush()
-        if client:
-            data = {
-                'temperature': measurement.temperature,
-                'humidity': measurement.humidity,
-                'radon': measurement.radon_1day,
-                'brightness': measurement.brightness,
-            }
-            client.publish(args.topic, json.dumps(data))
+            if client:
+                data = {
+                    'temperature': measurement.temperature,
+                    'humidity': measurement.humidity,
+                    'radon': measurement.radon_1day,
+                    'brightness': measurement.brightness,
+                }
+                client.publish(args.topic, json.dumps(data))
         if args.wait == 0:
             break
         time.sleep(args.wait)
